@@ -1,0 +1,11 @@
+10 10
+oooooooooo
+oxoxooxxoo
+ooxxxoxxoo
+oooooooooo
+xuxxxxxuxx
+xuuxxxxuxx
+xxuuuxxuxx
+xuuxxxuuux
+xuxxuuuxux
+xxxuuxuxuu
