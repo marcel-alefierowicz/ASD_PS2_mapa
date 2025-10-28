@@ -1,20 +1,29 @@
+using System.Diagnostics;
+
 class Program
 {
 
-    static int dfs(string[] input, bool[,] scanned, int x, int y, int n, int m)
+    static int dfs(string[] input, bool[,] scanned, int x, int y, int n, int m, ref bool isValid)
     {
         if (x <= 0 || x >= n || y <= 0 || y >= m || input[x][y] != 'x' || scanned[x, y])
             return 0;
+
+        if (x == 0 || y == 0 || y == m - 1 || x == n - 1)
+        {
+            isValid = false;
+        }
+
+
         scanned[x, y] = true;
         int area = 1;
-        area += dfs(input, scanned, x + 1, y, n, m); // po prawej
-        area += dfs(input, scanned, x - 1, y, n, m); // po lewej
-        area += dfs(input, scanned, x, y + 1, n, m); // wyzej
-        area += dfs(input, scanned, x, y - 1, n, m); // nizej
-        area += dfs(input, scanned, x + 1, y + 1, n, m); // po prawej i wyzej
-        area += dfs(input, scanned, x - 1, y - 1, n, m); // po lewej i nizej
-        area += dfs(input, scanned, x + 1, y - 1, n, m); // po prawej i nizej
-        area += dfs(input, scanned, x - 1, y + 1, n, m); // po lewej i wyzej
+        area += dfs(input, scanned, x + 1, y, n, m, ref isValid); // po prawej
+        area += dfs(input, scanned, x - 1, y, n, m, ref isValid); // po lewej
+        area += dfs(input, scanned, x, y + 1, n, m, ref isValid); // wyzej
+        area += dfs(input, scanned, x, y - 1, n, m, ref isValid); // nizej
+        area += dfs(input, scanned, x + 1, y + 1, n, m, ref isValid); // po prawej i wyzej
+        area += dfs(input, scanned, x - 1, y - 1, n, m, ref isValid); // po lewej i nizej
+        area += dfs(input, scanned, x + 1, y - 1, n, m, ref isValid); // po prawej i nizej
+        area += dfs(input, scanned, x - 1, y + 1, n, m, ref isValid); // po lewej i wyzej
 
         return area;
     }
@@ -34,8 +43,10 @@ class Program
             {
                 if (area[i][j] == 'x')
                 {
-                    int currentArea = dfs(area, scanned, i, j, n, m);
-                    biggestIslandArea = Math.Max(biggestIslandArea, currentArea);
+                    bool isValid = true;
+                    int currentArea = dfs(area, scanned, i, j, n, m, ref isValid);
+                    if (isValid)
+                        biggestIslandArea = Math.Max(biggestIslandArea, currentArea);
                 }
             }
         }
@@ -44,7 +55,11 @@ class Program
 
     public static void Main(string[] args)
     {
-        scanner(File.ReadAllLines("./in.txt"));
+        Stopwatch s = new Stopwatch();
+        s.Start();
+        scanner(File.ReadAllLines("./in2.txt"));
+        s.Stop();
+        System.Console.WriteLine(s.ElapsedMilliseconds);
         return;
     }
 }
