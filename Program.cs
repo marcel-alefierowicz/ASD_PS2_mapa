@@ -2,6 +2,11 @@ using System.Diagnostics;
 
 class Program
 {
+    static (int, int)[] directions = {
+        (-1, -1), (-1, 0), (-1, 1),
+        (0, -1),           (0, 1),
+        (1, -1),  (1, 0),  (1, 1)
+    };
 
     static int dfs(string[] input, bool[,] scanned, int x, int y, int n, int m, ref bool isValid)
     {
@@ -16,14 +21,12 @@ class Program
 
         scanned[x, y] = true;
         int area = 1;
-        area += dfs(input, scanned, x + 1, y, n, m, ref isValid); // po prawej
-        area += dfs(input, scanned, x - 1, y, n, m, ref isValid); // po lewej
-        area += dfs(input, scanned, x, y + 1, n, m, ref isValid); // wyzej
-        area += dfs(input, scanned, x, y - 1, n, m, ref isValid); // nizej
-        area += dfs(input, scanned, x + 1, y + 1, n, m, ref isValid); // po prawej i wyzej
-        area += dfs(input, scanned, x - 1, y - 1, n, m, ref isValid); // po lewej i nizej
-        area += dfs(input, scanned, x + 1, y - 1, n, m, ref isValid); // po prawej i nizej
-        area += dfs(input, scanned, x - 1, y + 1, n, m, ref isValid); // po lewej i wyzej
+        foreach (var (dx, dy) in directions)
+        {
+            int nx = x + dx, ny = y + dy;
+            if (nx >= 0 && nx < n && ny >= 0 && ny < m)
+                area += dfs(input, scanned, nx, ny, n, m, ref isValid);
+        }
 
         return area;
     }
@@ -37,7 +40,15 @@ class Program
         bool[,] scanned = new bool[n, m];
 
         int biggestIslandArea = 0;
+        int coastIndex = 0;
         for (int i = 0; i < m; i++)
+        {
+            if (area[i].All(c => c == 'o') && i > coastIndex)
+            {
+                coastIndex = i;
+            }
+        }
+        for (int i = 0; i < coastIndex; i++)
         {
             for (int j = 0; j < n; j++)
             {
@@ -57,9 +68,9 @@ class Program
     {
         Stopwatch s = new Stopwatch();
         s.Start();
-        scanner(File.ReadAllLines("./in2.txt"));
+        scanner(File.ReadAllLines("./in3.txt"));
         s.Stop();
-        System.Console.WriteLine(s.ElapsedMilliseconds);
+        Console.WriteLine($"elapsed: {s.ElapsedMilliseconds}");
         return;
     }
 }
